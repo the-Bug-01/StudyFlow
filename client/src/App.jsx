@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import { validateStudySet } from './utils/validateStudySet';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 const EXAMPLE_NOTES = `TCP (Transmission Control Protocol) is a connection-oriented transport layer protocol. It provides reliable, ordered and error-checked delivery of data between applications. Before data transfer, TCP establishes a connection using a three-way handshake: SYN, SYN-ACK and ACK. TCP uses sequence numbers to keep data in order and acknowledgements to confirm successful receipt. If data is lost, it can be retransmitted. Flow control prevents a sender from overwhelming a receiver, while congestion control helps avoid overloading the network. Unlike TCP, UDP is connectionless and does not guarantee delivery or ordering.`;
 
@@ -126,7 +127,7 @@ function App() {
       let response;
 
       try {
-        response = await fetch('/api/generate', {
+        response = await fetch(`${API_BASE_URL}/api/generate`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

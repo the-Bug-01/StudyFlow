@@ -349,6 +349,6 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`StudyFlow API listening on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`StudyFlow API listening on port ${PORT}`);
 });
