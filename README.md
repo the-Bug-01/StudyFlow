@@ -1,48 +1,58 @@
 # StudyFlow — AI-Powered Interactive Study Assistant
 
-StudyFlow is a full-stack AI-powered study assistant that transforms free-form study notes into interactive flashcards and multiple-choice quizzes. It uses Google's Gemini API to generate structured learning material and validates the generated content before displaying it in the application.
+StudyFlow is a full-stack AI-powered study assistant that transforms free-form study notes into interactive flashcards and multiple-choice quizzes. It uses Google's Gemini API to generate structured learning material, which is validated and presented through an interactive React interface.
+
+The goal of StudyFlow is to make studying more effective by turning regular course notes into practice material that students can actively engage with.
 
 ## Features
 
-- **AI-powered generation:** Generate flashcards, quizzes, or both from user-provided notes.
-- **Interactive flashcards:** Flip cards, navigate using buttons or keyboard arrow keys, and mark concepts as mastered.
-- **Interactive quizzes:** Answer multiple-choice questions, receive instant feedback, view explanations, and calculate scores.
-- **Mistake-based retesting:** Retry questions answered incorrectly.
-- **Structured AI output:** Generate JSON responses using Gemini's structured-output mode.
-- **Response validation:** Validate incoming requests and AI-generated responses using Zod on the backend, with additional validation on the frontend.
-- **Error handling:** Handle malformed AI responses, API failures, timeouts, and invalid input gracefully.
-- **Request management:** Prevent duplicate submissions while loading and protect against stale responses.
-- **Responsive interface:** Designed for desktop and mobile screens.
+- **AI-powered generation:** Generate flashcards, quizzes, or both from user-provided study notes.
+- **Interactive flashcards:** Flip cards to reveal answers, navigate using buttons or keyboard arrow keys, and mark concepts as mastered.
+- **Interactive quizzes:** Answer multiple-choice questions, receive immediate feedback, view explanations, and calculate your score.
+- **Mistake-based retesting:** Retry questions that were answered incorrectly.
+- **Structured AI output:** Uses Gemini's structured-output capabilities to generate JSON responses.
+- **Response validation:** Validates incoming requests and AI-generated responses using Zod on the backend, with additional validation on the frontend.
+- **Error handling:** Handles malformed AI responses, API failures, timeouts, and invalid input gracefully.
+- **Request management:** Prevents duplicate submissions while generating content and protects against stale responses.
+- **Responsive interface:** Provides a responsive experience across desktop and mobile screen sizes.
 
 ## Technology Stack
 
 | Component | Technology |
 |---|---|
 | Frontend | React, JavaScript |
-| UI | CSS, Lucide React |
-| Build tool | Vite |
+| Styling | CSS |
+| Icons | Lucide React |
+| Build Tool | Vite |
 | Backend | Node.js, Express.js |
-| AI integration | Google Gemini API |
+| AI Integration | Google Gemini API |
 | Validation | Zod |
 | Security | Helmet, CORS, Express Rate Limit |
 
 ## Project Structure
 
 ```text
-studyflow/
+StudyFlow/
 ├── client/
 │   ├── src/
 │   │   ├── utils/
 │   │   │   └── validateStudySet.js
 │   │   ├── App.jsx
-│   │   └── ...
-│   └── package.json
+│   │   ├── main.jsx
+│   │   └── styles.css
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+│
 ├── server/
 │   ├── index.js
 │   ├── .env.example
 │   └── package.json
+│
 ├── package.json
+├── package-lock.json
 ├── .gitignore
+├── IMPLEMENTATION_NOTES.md
 └── README.md
 ```
 
@@ -57,11 +67,13 @@ studyflow/
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd studyflow
+git clone https://github.com/the-Bug-01/StudyFlow.git
+cd StudyFlow
 ```
 
 ### 2. Install dependencies
+
+Run the following commands from the project root:
 
 ```bash
 npm install
@@ -71,7 +83,7 @@ npm --prefix server install
 
 ### 3. Configure environment variables
 
-Create a `.env` file inside the `server` directory by copying the example file.
+Create a `.env` file inside the `server` directory using the provided example file.
 
 **Windows PowerShell:**
 
@@ -85,51 +97,57 @@ Copy-Item server/.env.example server/.env
 cp server/.env.example server/.env
 ```
 
-Add your configuration to `server/.env`:
+Add your Gemini configuration to `server/.env`:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=your_working_gemini_model
+GEMINI_MODEL=your_available_gemini_model
 PORT=3001
 CLIENT_ORIGIN=http://localhost:5173
 ```
 
-Replace the API key and model name with your actual working configuration.
+Replace the API key and model name with your own valid Gemini credentials and an available model.
 
-**Security:** Never commit `server/.env` or expose your Gemini API key in frontend code.
+**Security:** The Gemini API key is stored on the backend and is never exposed in the frontend. The actual `server/.env` file is excluded from Git.
 
 ### 4. Start the application
 
-From the project root:
+From the project root, run:
 
 ```bash
 npm run dev
 ```
 
+This starts both the frontend development server and the Express backend.
+
 ### 5. Open the application
 
 Visit:
 
+```text
 http://localhost:5173
+```
 
-The frontend communicates with the Express backend running on port 3001.
+The frontend communicates with the Express backend running on port `3001`.
 
 ## How to Use StudyFlow
 
 1. Paste your study notes into the input area.
-2. Choose the desired output:
+2. Choose the type of study material you want:
    - Both flashcards and quizzes
    - Flashcards only
    - Quiz only
-3. Select the number of questions or cards.
+3. Select the desired number of questions or flashcards.
 4. Click **Generate study set**.
-5. Review and interact with your generated learning material.
+5. Review the generated flashcards and quiz questions.
+6. Flip flashcards to reveal answers and use the quiz section to test your understanding.
+7. Review your score and explanations, and retry incorrectly answered questions.
 
 ## API Documentation
 
 ### POST `/api/generate`
 
-Generates study material from the submitted notes.
+Generates study material from the submitted study notes.
 
 **Request body:**
 
@@ -141,7 +159,7 @@ Generates study material from the submitted notes.
 }
 ```
 
-Parameters:
+**Parameters:**
 
 | Parameter | Description |
 |---|---|
@@ -185,72 +203,72 @@ The API returns empty arrays for content types that were not requested.
 
 ### GET `/api/health`
 
-Checks whether the backend service is running.
+Checks the health and availability of the backend service.
 
 ## Error Handling and Reliability
 
-StudyFlow includes several safeguards to handle unreliable AI responses and network failures.
+AI-generated responses can be unpredictable, so StudyFlow includes multiple validation and error-handling mechanisms.
 
-- **Input validation:** Rejects invalid requests before calling the AI provider.
-- **Structured output:** Requests JSON responses from Gemini.
+- **Input validation:** Rejects invalid requests before sending them to the AI provider.
+- **Structured output:** Requests JSON-formatted responses from Gemini.
 - **JSON parsing:** Handles fenced JSON and attempts to extract a JSON object from surrounding text.
-- **Schema validation:** Uses Zod to validate generated flashcards, quizzes, fields, options, and answer indexes.
-- **Duplicate ID detection:** Rejects study sets containing duplicate item identifiers.
+- **Schema validation:** Uses Zod to validate generated flashcards, quiz questions, fields, options, and answer indexes.
+- **Duplicate ID detection:** Rejects generated study sets containing duplicate item identifiers.
 - **Timeout handling:** Uses server-side and frontend request timeouts.
-- **Retry handling:** Retries eligible temporary provider failures.
+- **Retry handling:** Retries eligible temporary failures from the AI provider.
 - **Rate limiting:** Restricts excessive API requests.
 - **API-key protection:** Keeps the Gemini API key on the backend.
-- **Frontend validation:** Checks the response structure before rendering it.
-- **Stale-response protection:** Prevents outdated requests from replacing newer results.
+- **Frontend validation:** Checks the response structure before rendering generated content.
+- **Stale-response protection:** Prevents outdated requests from overwriting newer results.
 - **User feedback:** Provides loading indicators, error messages, and retry options.
 
 ## AI Usage Disclosure
 
-AI assistance was used during development to help with implementation, debugging, code review, and documentation.
+AI assistance was used during development for implementation support, debugging, code review, and documentation.
 
-Google Gemini is also integrated at runtime to generate flashcards and quiz questions from user-provided study notes.
+Google Gemini is integrated into the application at runtime to generate flashcards and quiz questions from user-provided study notes.
 
-The implementation has been reviewed and tested, and the developer is responsible for understanding and maintaining the submitted code.
+The generated implementation has been reviewed and tested by the developer, who is responsible for understanding and maintaining the submitted code.
 
 ## Known Limitations
 
-- AI-generated content may contain factual inaccuracies. Users should verify important information against their original course materials.
-- Study sessions and learning progress are currently stored in React state and are not persisted after refreshing the page.
-- The application does not currently include authentication or a database.
+- AI-generated content may contain factual inaccuracies. Users should verify important information against their original study materials.
+- Study sessions and learning progress are stored in React state and are not persisted after refreshing the page.
+- The application does not currently include user authentication or a database.
 - AI generation depends on Gemini API availability, model access, and account quotas.
-- Automated tests have not yet been added.
+- Automated tests have not yet been implemented.
 
-## Running a Production Build
+## Production Build
 
-Build the frontend:
+To create a production build of the frontend, run:
 
 ```bash
 npm run build
 ```
 
-The generated frontend files are placed in the client's build output directory.
+The generated production files are placed in the client's `dist` directory.
 
-For deployment, configure the frontend and Express backend so that API requests reach the backend correctly. When hosting them separately, configure the frontend API URL and the backend's allowed client origin.
+For deployment, the frontend and Express backend must be configured to communicate correctly. When hosting them separately, the frontend API URL and backend CORS origin must be configured accordingly.
 
 ## Available Scripts
 
-| Command | Purpose |
+Run these commands from the project root:
+
+| Command | Description |
 |---|---|
-| `npm run dev` | Start frontend and backend development servers |
-| `npm run build` | Build the frontend |
-| `npm start` | Start the backend API |
+| `npm run dev` | Starts the frontend and backend development servers |
+| `npm run build` | Creates a production build of the frontend |
+| `npm start` | Starts the backend API server |
 
 ## Future Improvements
 
-- Save and retrieve previous study sessions.
-- Add user authentication and persistent learning progress.
-- Introduce automated tests for API responses and validation.
-- Add study analytics and topic-wise performance tracking.
-- Allow users to refine generated questions and flashcards.
+Some potential improvements for future versions include:
 
-## Time Spent
-
-Record the actual development, debugging, testing, and documentation time before submission.
+- Saving and retrieving previous study sessions.
+- Adding user authentication and persistent learning progress.
+- Introducing automated tests for API responses and validation.
+- Adding study analytics and topic-wise performance tracking.
+- Allowing users to refine generated flashcards and quiz questions.
 
 ---
 
