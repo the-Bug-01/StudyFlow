@@ -57,8 +57,8 @@ studyflow/
 ### 1. Clone the repository
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-cd studyflow
+git clone https://github.com/the-Bug-01/StudyFlow.git
+cd StudyFlow
 ```
 
 ### 2. Install dependencies
